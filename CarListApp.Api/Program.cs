@@ -37,14 +37,14 @@ namespace CarListApp.Api
 
             app.UseAuthorization();
 
-            app.MapGet("/cars", async (CarListDBContext db) => await db.Table_Cars.ToListAsync());
+            app.MapGet("/cars", async (CarListDBContext db) => await db.Cars_Table.ToListAsync());
             app.MapGet("/cars/{id}", async (int id, CarListDBContext db) =>
-                await db.Table_Cars.FindAsync(id) is Car car ? Results.Ok(car) : Results.NotFound()
+                await db.Cars_Table.FindAsync(id) is Car car ? Results.Ok(car) : Results.NotFound()
                 );
 
             app.MapPut("/cars/{id}", async (int id, Car car, CarListDBContext db) =>
             {
-                var record = await db.Table_Cars.FindAsync(id);
+                var record = await db.Cars_Table.FindAsync(id);
                 if(record is null) return Results.NotFound();
 
                 record.Make = car.Make;
@@ -58,7 +58,7 @@ namespace CarListApp.Api
 
             app.MapDelete("/cars/{id}", async (int id, CarListDBContext db) =>
             {
-                var record = await db.Table_Cars.FindAsync(id);
+                var record = await db.Cars_Table.FindAsync(id);
                 if (record is null) return Results.NotFound();
                 db.Remove(record);
                 await db.SaveChangesAsync();
@@ -68,7 +68,7 @@ namespace CarListApp.Api
 
             app.MapPost("/cars", async (Car car, CarListDBContext db) =>
             {
-                await db.AddAsync(car);
+                await db.Cars_Table.AddAsync(car);
                 await db.SaveChangesAsync();
 
                 return Results.Created($"/cars/{car.Id}", car);

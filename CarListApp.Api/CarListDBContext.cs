@@ -9,7 +9,7 @@ namespace CarListApp.Api
 
         }
 
-        public DbSet<Car> Table_Cars { get; set; }
+        public DbSet<Car> Cars_Table { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
