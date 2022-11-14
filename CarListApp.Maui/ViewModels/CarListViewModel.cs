@@ -23,7 +23,7 @@ namespace CarListApp.Maui.ViewModels
             Title = "Car List";
             AddEditButtonText = createButtonText;
             this.carApiService = carApiService;
-            //GetCarList();
+            GetCarList();
         }
 
         [ObservableProperty]

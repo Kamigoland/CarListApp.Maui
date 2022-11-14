@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
+using CarListApp.Maui.ViewModels;
 
 namespace CarListApp.Maui.Services
 {
@@ -22,6 +23,7 @@ namespace CarListApp.Maui.Services
         {
             try
             {
+                await SetAuthToken();
                 var response = await _httpClient.GetStringAsync("/cars");
                 return JsonConvert.DeserializeObject<List<Car>>(response);
             }
@@ -35,6 +37,7 @@ namespace CarListApp.Maui.Services
         {
             try
             {
+                await SetAuthToken();
                 var response = await _httpClient.GetStringAsync("/cars/" + id);
                 return JsonConvert.DeserializeObject<Car>(response);
             }
@@ -82,6 +85,28 @@ namespace CarListApp.Maui.Services
             {
                 StatusMessage = "Failed to update data.";
             }
+        }
+        public async Task<AuthResponseModel> Login(LoginModel loginModel)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("/login", loginModel);
+                response.EnsureSuccessStatusCode();
+                StatusMessage = "Login Successful";
+
+                return JsonConvert.DeserializeObject<AuthResponseModel>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception)
+            {
+                StatusMessage = "Failed to login successfully.";
+                return default;
+            }
+        }
+        public async Task SetAuthToken()
+        {
+            var token = await SecureStorage.GetAsync("Token");
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
     }
 }
